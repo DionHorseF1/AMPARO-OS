@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Amparo OS: sistema para inclusão digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--pg:#e8eef2;--pink:#17222b;--muted:#4b5b68;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--pg:#10181e;--pink:#e8eef2;--muted:#a3b3bf}}
+:root[data-theme="dark"]{--pg:#10181e;--pink:#e8eef2;--muted:#a3b3bf}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--pg);color:var(--pink);font-family:"Atkinson Hyperlegible",system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;padding:16px 12px 32px}
+h1{font-size:1.2rem;margin:4px 0 2px;text-align:center}
+.sub{color:var(--muted);font-size:.9rem;text-align:center;margin:0 0 14px;max-width:380px}
+.phone{width:340px;height:680px;max-width:100%;background:#1d2733;border-radius:40px;padding:12px;box-shadow:0 18px 40px rgba(0,0,0,.28);position:relative}
+.notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:84px;height:18px;background:#1d2733;border-radius:12px;z-index:5}
+.os{--bg:#fff;--ink:#17222b;--card:#f3f7f9;--bd:#17222b;--acc:#0b6e4f;--ai:#fff;background:var(--bg);color:var(--ink);height:100%;border-radius:29px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.os.hc{--bg:#000;--ink:#fff;--card:#000;--bd:#ffd400;--acc:#ffd400;--ai:#000}
+.top{height:38px;flex:none;display:flex;justify-content:space-between;align-items:flex-end;padding:0 16px 4px;font-size:12px}
+.top button{border:2px solid var(--bd);background:var(--card);color:var(--ink);border-radius:10px;font:inherit;font-size:13px;font-weight:700;padding:1px 8px;cursor:pointer}
+.body{flex:1;overflow-y:auto;padding:8px 14px 12px;display:flex;flex-direction:column;gap:10px}
+h2{font-size:calc(1.4rem*var(--z,1));margin:0;line-height:1.2}
+p{margin:0;font-size:calc(1.02rem*var(--z,1));line-height:1.4}
+.clock{font-size:calc(3.2rem*var(--z,1));font-weight:700;line-height:1}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 6px;border:3px solid var(--bd);background:var(--card);color:var(--ink);border-radius:18px;font:inherit;font-size:calc(1.05rem*var(--z,1));font-weight:700;cursor:pointer}
+.tile .ic{font-size:2.2rem}
+.big{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;font-size:calc(1.1rem*var(--z,1));font-weight:700;padding:14px;border-radius:16px;border:3px solid var(--bd);background:var(--card);color:var(--ink);cursor:pointer}
+.big .ic{font-size:1.6rem}
+.big.main{background:var(--acc);border-color:var(--acc);color:var(--ai)}
+.big.red{background:#b3261e;border-color:#b3261e;color:#fff}
+.big.done{opacity:.6}
+.card{border:3px dashed var(--bd);border-radius:16px;padding:14px;text-align:center}
+.card b{display:block;font-size:calc(2rem*var(--z,1));color:var(--acc);line-height:1.15}
+.warn{border-left:8px solid #f2b705;background:var(--card);padding:10px 12px;border-radius:8px}
+.nav{flex:none;display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:8px;padding:8px 10px 10px;border-top:3px solid var(--bd);background:var(--bg)}
+.nav button{font:inherit;font-weight:700;font-size:1rem;padding:12px 4px;border-radius:14px;border:3px solid var(--bd);background:var(--card);color:var(--ink);cursor:pointer}
+.nav button:disabled{opacity:.35;cursor:default}
+.nav .help{background:#f2b705;color:#17222b;border-color:#17222b}
+.avatar{font-size:5rem;text-align:center}
+.row{display:flex;gap:8px}.row .big{justify-content:center}
+.sheet{position:absolute;inset:0;z-index:8;background:rgba(10,20,28,.6);display:flex;align-items:flex-end}
+.sheet>div{background:var(--bg);color:var(--ink);width:100%;border-radius:24px 24px 0 0;padding:16px;display:flex;flex-direction:column;gap:8px;border-top:4px solid #f2b705}
+.way{border:2px solid var(--bd);border-radius:14px;padding:8px 12px;font-size:.98rem;line-height:1.3}
+.way b{display:block}
+button:focus-visible{outline:4px solid #1a5fd0;outline-offset:2px}
+[hidden]{display:none!important}
+.tabs{display:flex;gap:6px;margin-bottom:14px;border:1px solid var(--muted);border-radius:999px;padding:4px}
+.tabs button{border:0;background:none;color:var(--pink);font:inherit;padding:8px 14px;border-radius:999px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--pink);color:var(--pg);font-weight:700}
+.pr{height:auto;width:300px;border:2px solid #17222b}.pr .body{overflow:visible}
+.pgrid,.cmp{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;max-width:760px}
+.cap{font-weight:700;text-align:center;margin:0 0 6px}
+.old{font-size:8px;line-height:1.3;color:#555;background:#f1f1f1;padding:10px;border:2px solid #17222b;width:300px;border-radius:12px}
+.old input{display:block;width:100%;font-size:7px;padding:2px;margin:2px 0 5px;border:1px solid #ccc}
+.why{max-width:640px;line-height:1.55;margin:8px 0 0}
+.why li{margin-bottom:4px}
+.pbtn{font:inherit;font-weight:700;padding:10px 18px;border-radius:12px;border:2px solid var(--pink);background:none;color:var(--pink);cursor:pointer;margin-bottom:14px}
+input.in{font:inherit;font-size:1.2rem;padding:12px;border:3px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--ink);width:100%}
+.opts{display:flex;gap:6px;flex-wrap:wrap}.opts .tile{padding:6px 12px}.opts .tile.on{background:var(--acc);color:var(--ai)}
+@media print{.noprint{display:none!important}body{background:#fff;color:#000}.pr{break-inside:avoid}}
+.note{max-width:360px;color:var(--muted);font-size:.85rem;text-align:center;margin-top:14px;line-height:1.4}
+</style>
+</head>
+<body>
+<h1 class="noprint">Amparo OS</h1>
+<p class="sub noprint">Um sistema feito para quem tem dificuldade com tecnologia. Toque nos ícones para explorar.</p>
+<div class="tabs noprint" id="tabs"><button data-t="sim" aria-pressed="true">Simulador</button><button data-t="cmp" aria-pressed="false">Comparar</button><button data-t="prt" aria-pressed="false">Imprimir</button></div>
+<div id="vSim"><div class="phone"><div class="notch"></div><div class="os" id="os"></div></div></div>
+<div id="vCmp" class="cmp" hidden></div>
+<div id="vPrt" hidden style="text-align:center"></div>
+<p class="note noprint">Em todas as telas: botão Início para recomeçar, Voltar para desfazer e Ajuda sempre à vista. Nada some, nada tem pressa.</p>
+
+<script>
+var S={scr:"home",st:[],z:1,hc:false,help:false,sent:false,to:"",ph:"",spec:"",appts:[],meds:{},saldo:false,lesson:0,ct:[["👩","Maria (filha)"],["🏥","Posto de Saúde"],["👨","Seu José (vizinho)"]],tutOn:false,tut:0,q:0,qs:0,qa:null,emo:"👤",nm:""};
+var os=document.getElementById("os");
+var EM=["🚑","Emergência 192"];
+function ALL(){return S.ct.concat([EM]);}
+function esc(s){return s.replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function save(){try{localStorage.setItem("amparo",JSON.stringify({ct:S.ct,appts:S.appts,meds:S.meds,hc:S.hc,z:S.z,seen:!S.tutOn}));}catch(e){}}
+try{var D=JSON.parse(localStorage.getItem("amparo")||"null");if(D){S.ct=D.ct||S.ct;S.appts=D.appts||[];S.meds=D.meds||{};S.hc=!!D.hc;S.z=D.z||1;S.tutOn=!D.seen;}else S.tutOn=true;}catch(e){S.tutOn=true;}
+var TUT=[["👋","Bem-vindo!","Este aparelho é calmo: nada some e nada tem pressa. Vamos aprender em 3 passos."],["👆","Toque nos ícones","Os ícones grandes abrem os aplicativos. Toque uma vez e espere."],["↩️","Voltar e Início","Voltar desfaz o último passo. Início leva à tela de partida. Não dá para estragar nada."],["🙋","Precisa de ajuda?","O botão amarelo Ajuda aparece em todas as telas e chama uma pessoa de verdade."]];
+var QZ=[["URGENTE: sua conta será bloqueada hoje. Clique no link e digite sua senha para evitar.",1,"Golpe. Banco nunca pede senha por link. Apague e ligue para o número do cartão."],["Posto de Saúde: sua consulta é amanhã, às 8h. Não precisa responder.",0,"Seguro. Só avisa: não pede dinheiro, senha nem clique. Na dúvida, ligue para o posto."],["Parabéns! Você ganhou um prêmio. Pague R$ 50 para liberar.",1,"Golpe. Prêmio de verdade não pede pagamento antes."],["Oi, mãe! Mudei de número. Salve aqui e me mande R$ 800 agora, urgente.",1,"Golpe comum. Ligue para o número antigo do seu filho antes de qualquer Pix."]];
+function tutHtml(){var t=TUT[S.tut],last=S.tut==TUT.length-1;return '<div class="sheet"><div role="dialog" aria-label="Tutorial"><p>Passo '+(S.tut+1)+' de '+TUT.length+'</p><div class="avatar">'+t[0]+'</div><h2 style="text-align:center">'+t[1]+'</h2><p>'+t[2]+'</p>'+B(last?"✔️":"›",last?"Entendi, vamos começar":"Próximo","tn","","main")+(last?"":B("⏭️","Pular tutorial","tskip"))+'</div></div>';}
+var PH=["Estou bem, não se preocupe.","Pode me ligar quando puder?","Preciso de ajuda."];
+var MED=[["💊","Losartana","8h, 1 comprimido"],["💊","Metformina","12h, depois do almoço"],["☀️","Vitamina D","20h, 1 gota"]];
+var LS=[["🚨","Como saber se é golpe","Desconfie de quem pede senha, código ou dinheiro com pressa. Banco e governo não pedem isso por telefone nem mensagem. Na dúvida, desligue e peça ajuda a alguém de confiança."],
+["🙋","Como pedir ajuda","Toque no botão amarelo Ajuda, em qualquer tela. Você pode ligar, ir ao balcão ou chamar um Amigo Digital, que faz junto com você, passo a passo."],
+["📶","O que é Wi-Fi","É a internet sem fio da casa ou do posto. Se não tiver, tudo bem: o telefone fixo e o balcão têm o mesmo atendimento."]];
+
+function B(ic,t,a,v,c){return '<button class="big '+(c||"")+'" data-a="'+a+'" data-v="'+(v===undefined?"":v)+'"><span class="ic" aria-hidden="true">'+ic+'</span>'+t+'</button>';}
+function T(ic,t,s){return '<button class="tile" data-a="go" data-v="'+s+'"><span class="ic" aria-hidden="true">'+ic+'</span>'+t+'</button>';}
+
+var V={
+home:function(){var h=new Date().getHours(),g=h<12?"Bom dia!":h<18?"Boa tarde!":"Boa noite!";
+ return '<div><div class="clock" id="clk"></div><p id="dt"></p></div><h2>'+g+'</h2><div class="grid">'+T("📞","Telefone","fone")+T("💬","Mensagens","msg")+T("🩺","Saúde","saude")+T("💊","Remédios","rem")+T("🏦","Banco","banco")+T("📚","Aprender","apr")+'</div>'+B("⚙️","Ajustar letras e cores","go","cfg");},
+fone:function(){return '<h2>Quem você quer ligar?</h2>'+ALL().map(function(c,i){return B(c[0],c[1],"call",i,i==S.ct.length?"red":"");}).join("")+B("✏️","Editar contatos","go","edc");},
+call:function(){var c=ALL()[S.to];return '<div class="avatar">'+c[0]+'</div><h2 style="text-align:center">Chamando '+c[1]+'…</h2><p style="text-align:center">Fale perto do telefone.</p>'+B("📵","Desligar","home","","red");},
+msg:function(){return '<h2>Para quem é a mensagem?</h2>'+S.ct.map(function(c,i){return B(c[0],c[1],"msgto",i);}).join("");},
+msg2:function(){return '<h2>O que você quer dizer?</h2><p>Para: <b>'+S.ct[S.to][1]+'</b>. Toque na frase. Sem digitar.</p>'+PH.map(function(t,i){return B("💬",t,"msgph",i);}).join("");},
+msgok:function(){return '<div class="avatar">✅</div><h2 style="text-align:center">Mensagem enviada</h2><div class="card"><p>'+S.ph+'</p></div>'+B("⌂","Voltar ao início","home","","main");},
+saude:function(){return '<h2>Saúde</h2>'+B("📅","Marcar consulta","go","sp","main")+B("📋","Minhas consultas ("+S.appts.length+")","go","mine")+B("📞","Ligar para alguém","go","fone");},
+sp:function(){return '<h2>Qual consulta?</h2>'+["🩺|Clínico geral","🦷|Dentista","👁️|Olhos"].map(function(x){var a=x.split("|");return B(a[0],a[1],"spec",a[1]);}).join("");},
+dia:function(){return '<h2>Qual dia?</h2><p>Consulta: <b>'+S.spec+'</b></p>'+["Segunda, 8h","Quarta, 14h","Sexta, 9h"].map(function(d){return B("🗓️",d,"day",d);}).join("");},
+conf:function(){return '<h2>Confira antes de confirmar</h2><div class="card"><p>'+S.spec+'</p><b>'+S.day+'</b></div>'+B("✔️","Confirmar","yes","","main")+B("✖️","Mudar","back");},
+ok:function(){return '<div class="avatar">🎉</div><h2 style="text-align:center">Consulta marcada!</h2><div class="card"><p>'+S.spec+'</p><b>'+S.day+'</b></div><p>Você também pode mostrar esta tela no balcão.</p>'+B("⌂","Voltar ao início","home");},
+mine:function(){return '<h2>Minhas consultas</h2>'+(S.appts.length?S.appts.map(function(a){return '<div class="card"><p>'+a[0]+'</p><b>'+a[1]+'</b></div>';}).join(""):'<p>Você ainda não marcou nenhuma consulta.</p>'+B("📅","Marcar agora","go","sp","main"));},
+rem:function(){return '<h2>Remédios de hoje</h2>'+MED.map(function(m,i){var d=S.meds[i];return B(d?"✅":m[0],m[1]+" · "+m[2]+(d?" (tomado)":""),"med",i,d?"done":"");}).join("")+'<p>Toque no remédio quando tomar.</p>';},
+banco:function(){return '<h2>Banco</h2><div class="card"><p>Seu saldo</p><b>'+(S.saldo?"R$ 1.240,50":"R$ ••••")+'</b></div>'+B("👁️",S.saldo?"Esconder saldo":"Mostrar saldo","saldo")+B("💡","Pagar conta de luz","go","pay","main")+'<div class="warn"><p><b>Atenção:</b> o banco nunca pede sua senha por telefone ou mensagem.</p></div>';},
+pay:function(){return '<h2>Pagar conta de luz?</h2><div class="card"><p>Valor</p><b>R$ 87,40</b><p>Vence dia 28</p></div><p>Confira o valor. Só pague se for você que quer.</p>'+B("✔️","Sim, pagar","go","payok","main")+B("✖️","Não, cancelar","home");},
+payok:function(){return '<div class="avatar">✅</div><h2 style="text-align:center">Conta paga</h2><p style="text-align:center">O comprovante fica guardado em Banco.</p>'+B("⌂","Voltar ao início","home","","main");},
+apr:function(){return '<h2>Aprender com calma</h2>'+B("🎯","Treinar: é golpe ou não?","quiz0","","main")+LS.map(function(l,i){return B(l[0],l[1],"les",i);}).join("");},
+les:function(){var l=LS[S.lesson];return '<div class="avatar">'+l[0]+'</div><h2>'+l[1]+'</h2><p>'+l[2]+'</p>'+B("🔊","Ouvir esta lição","speak");},
+edc:function(){return '<h2>Editar contatos</h2><p>Um familiar ou Amigo Digital pode ajudar aqui.</p>'+S.ct.map(function(c,i){return B("🗑️","Remover "+c[1],"delc",i);}).join("")+B("➕","Adicionar contato","go","addc","main");},
+addc:function(){return '<h2>Novo contato</h2><p>Nome</p><input class="in" id="nm" maxlength="20" value="'+S.nm+'" aria-label="Nome"><p>Escolha um desenho</p><div class="opts">'+["👵","👴","👩","👨","🧑","🏥"].map(function(e){return '<button class="tile'+(S.emo==e?" on":"")+'" data-a="emo" data-v="'+e+'">'+e+'</button>';}).join("")+'</div>'+B("💾","Salvar contato","savec","","main");},
+quiz:function(){var i=S.q;if(i>=QZ.length)return '<div class="avatar">🏆</div><h2 style="text-align:center">Você acertou '+S.qs+' de '+QZ.length+'</h2><p>Na dúvida, não clique, não responda e peça ajuda.</p>'+B("↺","Treinar de novo","quiz0")+B("⌂","Início","home");var z=QZ[i];return '<p>Mensagem '+(i+1)+' de '+QZ.length+'</p><div class="card"><p>'+z[0]+'</p></div>'+(S.qa===null?B("🚨","É golpe","qa",1,"red")+B("✅","É seguro","qa",0,"main"):'<div class="warn"><h2>'+(S.qa==z[1]?"Acertou!":"Cuidado!")+'</h2><p>'+z[2]+'</p></div>'+B("›","Próxima","qn","","main"));},
+cfg:function(){return '<h2>Ajustar o aparelho</h2><p>Tamanho das letras</p><div class="row">'+B("A−","Menor","z",-1)+B("A+","Maior","z",1)+'</div>'+B("🌗",S.hc?"Alto contraste: ligado":"Alto contraste: desligado","hc")+B("🔊","Ouvir esta tela","speak")+B("🎓","Rever o tutorial","tut");}
+};
+
+function render(){
+ os.className="os"+(S.hc?" hc":"");os.style.setProperty("--z",S.z);
+ var home=S.scr=="home";
+ os.innerHTML='<div class="top"><span id="sb"></span><button data-a="speak" aria-label="Ouvir a tela">🔊 Ouvir</button></div><div class="body">'+V[S.scr]()+'</div>'+
+ '<div class="nav"><button data-a="back"'+(home?" disabled":"")+'>‹ Voltar</button><button data-a="home"'+(home?" disabled":"")+'>⌂ Início</button><button class="help" data-a="help">🙋 Ajuda</button></div>'+
+ (S.help?'<div class="sheet"><div role="dialog" aria-label="Ajuda">'+(S.sent?'<h2>Aviso enviado ✅</h2><p>Um atendente vai até você. Pode esperar com calma.</p>':'<h2>Você não está sozinho</h2><div class="way"><b>📞 Ligar</b>Telefone fixo, sem internet.</div><div class="way"><b>🏢 Balcão</b>Atendimento com senha de papel.</div><div class="way"><b>🧑‍🤝‍🧑 Amigo Digital</b>Um voluntário faz com você.</div>'+B("🙋","Chamar um Amigo Digital","sendhelp","","main"))+B("✖️","Fechar","closehelp")+'</div></div>':"")+(S.tutOn?tutHtml():"");save();
+ tick();
+}
+function tick(){var d=new Date(),c=document.getElementById("clk"),t=document.getElementById("dt"),s=document.getElementById("sb");
+ var hm=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+ if(c)c.textContent=hm;if(t)t.textContent=d.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});if(s)s.textContent=hm+" · Wi-Fi";}
+setInterval(tick,30000);
+
+function go(s){S.st.push(S.scr);S.scr=s;}
+function speak(){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(os.querySelector(".body").innerText);u.lang="pt-BR";u.rate=.85;speechSynthesis.speak(u);}catch(e){}}
+
+os.addEventListener("click",function(e){
+ var b=e.target.closest("[data-a]");if(!b||b.disabled)return;
+ var a=b.getAttribute("data-a"),v=b.getAttribute("data-v");
+ if(a=="go")go(v);
+ else if(a=="back"){S.scr=S.st.pop()||"home";}
+ else if(a=="home"){S.scr="home";S.st=[];}
+ else if(a=="call"){S.to=+v;go("call");}
+ else if(a=="msgto"){S.to=+v;go("msg2");}
+ else if(a=="msgph"){S.ph=PH[+v];go("msgok");}
+ else if(a=="spec"){S.spec=v;go("dia");}
+ else if(a=="day"){S.day=v;go("conf");}
+ else if(a=="yes"){S.appts.push([S.spec,S.day]);S.scr="ok";S.st=["home","saude"];}
+ else if(a=="med"){S.meds[v]=!S.meds[v];}
+ else if(a=="saldo"){S.saldo=!S.saldo;}
+ else if(a=="les"){S.lesson=+v;go("les");}
+ else if(a=="z"){S.z=Math.min(1.4,Math.max(.9,+(S.z+.15*v).toFixed(2)));}
+ else if(a=="hc"){S.hc=!S.hc;}
+ else if(a=="help"){S.help=true;S.sent=false;}
+ else if(a=="sendhelp"){S.sent=true;}
+ else if(a=="closehelp"){S.help=false;}
+ else if(a=="delc"){S.ct.splice(+v,1);}
+ else if(a=="emo"){S.emo=v;S.nm=esc(document.getElementById("nm").value);}
+ else if(a=="savec"){var n=esc(document.getElementById("nm").value.trim());if(n){S.ct.push([S.emo,n]);S.nm="";S.scr="fone";S.st=["home"];}}
+ else if(a=="quiz0"){S.q=0;S.qs=0;S.qa=null;if(S.scr!="quiz")go("quiz");}
+ else if(a=="qa"){S.qa=+v;if(S.qa==QZ[S.q][1])S.qs++;}
+ else if(a=="qn"){S.q++;S.qa=null;}
+ else if(a=="tut"){S.tutOn=true;S.tut=0;}
+ else if(a=="tn"){S.tut++;if(S.tut>=TUT.length)S.tutOn=false;}
+ else if(a=="tskip"){S.tutOn=false;}
+ else if(a=="speak"){speak();return;}
+ render();
+});
+function box(h){return '<div class="os pr'+(S.hc?" hc":"")+'"><div class="body">'+h.replace(/ id="(clk|dt)"/g,"")+'</div></div>';}
+function fillClock(){var d=new Date();document.querySelectorAll(".pr .clock").forEach(function(e){e.textContent=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});e.nextElementSibling.textContent=d.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});});}
+function buildCmp(){document.getElementById("vCmp").innerHTML='<div><p class="cap">App comum</p><div class="old"><b>Portal do Cidadão › Módulo de Regulação › SISREG</b><br>CPF / CNS / NIS-PIS<input>E-mail gov.br (nível prata/ouro)<input>Senha (12+ caracteres, símbolo e número)<input>Token de autenticação 2FA<input>Código CID conforme encaminhamento<input>Captcha: x7Kq9<input><small>Ao prosseguir você aceita os Termos de Uso, a Política de Privacidade e o Termo de Consentimento LGPD.</small><br><button disabled>Submeter requisição</button></div></div><div><p class="cap">Amparo OS</p>'+box(V.home())+'</div><div class="why"><b>Por que cada escolha existe</b><ul><li>Letra grande e contraste: ler sem esforço, sem pedir ajuda.</li><li>Um passo por tela: ninguém se perde nem desiste no meio.</li><li>Ajuda sempre visível: uma pessoa de verdade a um toque.</li><li>Conferir antes de confirmar: evita erro e golpe.</li><li>Frases prontas e voz: quem não digita também se comunica.</li></ul></div>';fillClock();}
+function buildPrt(){var L=[["Início",V.home],["Telefone",V.fone],["Mensagens",V.msg],["Saúde",V.saude],["Remédios",V.rem],["Banco",V.banco],["Aprender",V.apr],["Ajustar",V.cfg]];document.getElementById("vPrt").innerHTML='<button class="pbtn noprint" id="pb">🖨️ Imprimir telas</button><div class="pgrid">'+L.map(function(x){return '<div><p class="cap">'+x[0]+'</p>'+box(x[1]())+'</div>';}).join("")+'</div>';fillClock();document.getElementById("pb").onclick=function(){try{window.print();}catch(e){}};}
+document.getElementById("tabs").addEventListener("click",function(e){var b=e.target.closest("[data-t]");if(!b)return;var t=b.getAttribute("data-t");if(t=="cmp")buildCmp();if(t=="prt")buildPrt();["sim","cmp","prt"].forEach(function(k){document.getElementById("v"+k.charAt(0).toUpperCase()+k.slice(1)).hidden=(k!=t);});document.querySelectorAll("#tabs button").forEach(function(x){x.setAttribute("aria-pressed",x==b);});});
+render();
+</script>
+</body>
+</html>
